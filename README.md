@@ -24,3 +24,6 @@ $jrCrop.crop({
 }, function() {
     // User canceled or couldn't load image.
 });
+
+## Examples please!!
+I got ya. Run `bower install` in the root and `node app.js` from the examples folder. Visit `localhost:8080/examples`. Great now you can visit this from your phone too. It works best when packaged in cordova, as how you should use ionic anyway.
