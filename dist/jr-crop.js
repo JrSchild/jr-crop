@@ -2,7 +2,7 @@
  * Wishlist:
  *   Have a movable origin. Scale where you're pinching while dragging.
  */
-angular.module('starter.directives')
+angular.module('ionic')
 
 .factory('$jrCrop', [
   '$ionicModal',
