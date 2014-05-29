@@ -6,8 +6,10 @@ A simple ionic plugin to crop your images, inspired by whatsapp and telegram.
 * Doesn't actually scale the image, only returns a cropped version. Since the quality of images while scaling is inconsistent it's up to the developper to implement this, preferably on the server.
 * Returns a canvas element with the new cropped image.
 
+![example](/example.jpg)
+
 ## Simple enough, let's get started.
-Include jr-crop where you'd like to use it.
+Import jr-crop.js and jr-crop.css in the head, no in the footer, no concat it,.. whatever, just throw it in somewhere. Inject jr-crop.
 ```
 .controller('MyController', function($jrCrop) {
 ```
