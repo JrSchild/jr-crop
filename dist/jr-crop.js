@@ -1,7 +1,3 @@
-/**
- * Wishlist:
- *   Have a movable origin. Scale where you're pinching while dragging.
- */
 angular.module('ionic')
 
 .factory('$jrCrop', [
@@ -55,6 +51,8 @@ function($ionicModal, $rootScope, $q) {
 
         self.bindHandlers();
       });
+
+      // options === scope. Expose actions for modal.
       this.options.cancel = this.cancel.bind(this);
       this.options.crop = this.crop.bind(this);
     },
