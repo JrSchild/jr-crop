@@ -27,12 +27,20 @@ module.exports = function (grunt) {
           'dist/jr-crop.css': 'dist/jr-crop.scss'
         }
       }
+    },
+    uglify: {
+      dist: {
+        files: {
+          'dist/jr-crop.min.js': 'dist/jr-crop.js'
+        }
+      }
     }
   });
 
   grunt.loadNpmTasks('grunt-contrib-clean');
   grunt.loadNpmTasks('grunt-contrib-jshint');
   grunt.loadNpmTasks('grunt-contrib-sass');
+  grunt.loadNpmTasks('grunt-contrib-uglify');
 
-  grunt.registerTask('default', ['jshint', 'sass']);
+  grunt.registerTask('default', ['jshint', 'uglify', 'sass']);
 };
