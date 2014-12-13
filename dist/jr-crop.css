@@ -1,5 +1,6 @@
 .jr-crop {
-  background-color: #000; }
+  background-color: #000;
+  overflow: hidden; }
 
 .jr-crop-center-container {
   display: -webkit-box;
