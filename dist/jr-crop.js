@@ -68,11 +68,11 @@ function($ionicModal, $rootScope, $q) {
     initImage: function() {
       var self = this;
 
-      if(self.options.height < self.imgHeight || self.options.width < self.imgWidth) {
+      if (self.options.height < self.imgHeight || self.options.width < self.imgWidth) {
         var imgAspectRatio = self.imgWidth / self.imgHeight;
         var selectAspectRatio = self.options.width / self.options.height;
 
-        if(selectAspectRatio > imgAspectRatio) {
+        if (selectAspectRatio > imgAspectRatio) {
           self.scale = self.last_scale = self.options.width / self.imgWidth;
         } else {
           self.scale = self.last_scale = self.options.height / self.imgHeight;
@@ -81,7 +81,6 @@ function($ionicModal, $rootScope, $q) {
 
       var centerX = (self.imgWidth - self.options.width) / 2;
       var centerY = (self.imgHeight - self.options.height) / 2;
-
 
       self.posX = self.last_posX = -centerX;
       self.posY = self.last_posY = -centerY;
@@ -264,7 +263,7 @@ function($ionicModal, $rootScope, $q) {
     },
 
     crop: function(options) {
-      this.initOptions(options)
+      this.initOptions(options);
 
       var scope = $rootScope.$new(true);
 
@@ -283,13 +282,13 @@ function($ionicModal, $rootScope, $q) {
     initOptions: function(options) {
       ionic.Utils.extend(this.options, options);
 
-      if(this.options.aspectRatio) {
+      if (this.options.aspectRatio) {
 
-        if(!this.options.width && this.options.height) {
+        if (!this.options.width && this.options.height) {
           this.options.width = 200;
         }
 
-        if(this.options.width) {
+        if (this.options.width) {
           this.options.height = this.options.width / this.options.aspectRatio;
         } else if (this.options.height) {
           this.options.width = this.options.height * this.options.aspectRatio;
