@@ -37,12 +37,16 @@ function($ionicModal, $rootScope, $q) {
     posY: 0,
     scale: 1,
 
+    last_scale: 1,
+    last_posX:0,
+    last_posY:0,
+
     initialize: function(options) {
       var self = this;
 
-      this.options = options;
-      this.promise = $q.defer();
-      this.loadImage().then(function(elem) {
+      self.options = options;
+      self.promise = $q.defer();
+      self.loadImage().then(function(elem) {
         self.imgWidth = elem.naturalWidth;
         self.imgHeight = elem.naturalHeight;
 
@@ -50,17 +54,45 @@ function($ionicModal, $rootScope, $q) {
         self.options.modal.el.querySelector('.jr-crop-select').appendChild(self.imgFull = elem.cloneNode());
 
         self.bindHandlers();
+        self.initImage();
       });
 
       // options === scope. Expose actions for modal.
-      this.options.cancel = this.cancel.bind(this);
-      this.options.crop = this.crop.bind(this);
+      self.options.cancel = this.cancel.bind(this);
+      self.options.crop = this.crop.bind(this);
+    },
+
+    /**
+     * Init the image in a center position
+     */
+    initImage: function() {
+      var self = this;
+
+      if(self.options.height < self.imgHeight || self.options.width < self.imgWidth) {
+        var imgAspectRatio = self.imgWidth / self.imgHeight;
+        var selectAspectRatio = self.options.width / self.options.height;
+
+        if(selectAspectRatio > imgAspectRatio) {
+          self.scale = self.last_scale = self.options.width / self.imgWidth;
+        } else {
+          self.scale = self.last_scale = self.options.height / self.imgHeight;
+        }
+      }
+
+      var centerX = (self.imgWidth - self.options.width) / 2;
+      var centerY = (self.imgHeight - self.options.height) / 2;
+
+
+      self.posX = self.last_posX = -centerX;
+      self.posY = self.last_posY = -centerY;
+
+      self.setImageTransform();
     },
 
     cancel: function() {
       var self = this;
 
-      this.options.modal.remove().then(function() {
+      self.options.modal.remove().then(function() {
         self.promise.reject('canceled');
       });
     },
@@ -71,13 +103,11 @@ function($ionicModal, $rootScope, $q) {
     bindHandlers: function() {
       var self = this,
 
-          last_scale,
-          last_posX = 0, last_posY = 0,
           min_pos_x = 0, min_pos_y = 0,
           max_pos_x = 0, max_pos_y = 0,
           transforming_correctX = 0, transforming_correctY = 0,
 
-          scaleMin,
+          scaleMax = 1, scaleMin,
           image_ratio = self.imgWidth / self.imgHeight,
           cropper_ratio = self.options.width / self.options.height;
 
@@ -124,23 +154,23 @@ function($ionicModal, $rootScope, $q) {
       ionic.onGesture('touch transform drag dragstart dragend', function(e) {
         switch (e.type) {
           case 'touch':
-            last_scale = self.scale;
+            self.last_scale = self.scale;
             break;
           case 'drag':
-            self.posX = last_posX + e.gesture.deltaX - transforming_correctX;
-            self.posY = last_posY + e.gesture.deltaY - transforming_correctY;
+            self.posX = self.last_posX + e.gesture.deltaX - transforming_correctX;
+            self.posY = self.last_posY + e.gesture.deltaY - transforming_correctY;
             setPosWithinBoundaries();
             break;
           case 'transform':
-            self.scale = Math.max(scaleMin, Math.min(last_scale * e.gesture.scale, 10));
+            self.scale = Math.max(scaleMin, Math.min(self.last_scale * e.gesture.scale, scaleMax));
             setPosWithinBoundaries();
             break;
           case 'dragend':
-            last_posX = self.posX;
-            last_posY = self.posY;
+            self.last_posX = self.posX;
+            self.last_posY = self.posY;
             break;
           case 'dragstart':
-            last_scale = self.scale;
+            self.last_scale = self.scale;
 
             // After scaling, hammerjs needs time to reset the deltaX and deltaY values,
             // when the user drags the image before this is done the image will jump.
@@ -155,13 +185,20 @@ function($ionicModal, $rootScope, $q) {
             break;
         }
 
-        var transform =
-            'translate3d(' + self.posX + 'px,' + self.posY + 'px, 0) ' +
-            'scale3d(' + self.scale + ',' + self.scale + ', 0)';
+        self.setImageTransform();
 
-        self.imgSelect.style[ionic.CSS.TRANSFORM] = transform;
-        self.imgFull.style[ionic.CSS.TRANSFORM] = transform;
       }, self.options.modal.el);
+    },
+
+    setImageTransform: function() {
+      var self = this;
+
+      var transform =
+        'translate3d(' + self.posX + 'px,' + self.posY + 'px, 0) ' +
+        'scale3d(' + self.scale + ',' + self.scale + ', 1)';
+
+      self.imgSelect.style[ionic.CSS.TRANSFORM] = transform;
+      self.imgFull.style[ionic.CSS.TRANSFORM] = transform;
     },
 
     /**
@@ -220,10 +257,18 @@ function($ionicModal, $rootScope, $q) {
   });
 
   return {
+    options: {
+      width: 0,
+      height: 0,
+      aspectRatio: 0
+    },
+
     crop: function(options) {
+      this.initOptions(options)
+
       var scope = $rootScope.$new(true);
 
-      ionic.Utils.extend(scope, options);
+      ionic.Utils.extend(scope, this.options);
 
       scope.modal = $ionicModal.fromTemplate(template, {
         scope: scope
@@ -233,6 +278,23 @@ function($ionicModal, $rootScope, $q) {
       return scope.modal.show().then(function() {
         return (new jrCropController(scope)).promise.promise;
       });
+    },
+
+    initOptions: function(options) {
+      ionic.Utils.extend(this.options, options);
+
+      if(this.options.aspectRatio) {
+
+        if(!this.options.width && this.options.height) {
+          this.options.width = 200;
+        }
+
+        if(this.options.width) {
+          this.options.height = this.options.width / this.options.aspectRatio;
+        } else if (this.options.height) {
+          this.options.width = this.options.height * this.options.aspectRatio;
+        }
+      }
     }
   };
 }]);
