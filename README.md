@@ -39,7 +39,7 @@ $jrCrop.crop({
 ```
 
 ## Examples please!!
-I got ya. Run `bower install` in the root and `npm install && node app.js` from the examples folder. Visit `localhost:8080/examples`. Great now you can visit this from your phone too. It works best when packaged in cordova, as how you should use ionic anyway.
+I got ya. Run `bower install` in the root and `npm install && node app.js` from the examples folder. Visit `localhost:8181/examples`. Great now you can visit this from your phone too. It works best when packaged in cordova, as how you should use ionic anyway.
 
 ## Support
 Right now I'm only supporting iOS. Any help with debugging on Android is always welcome. If you just want to leave your thoughts you can reply in the [forum topic](http://forum.ionicframework.com/t/sharing-my-photo-crop-plugin/4961).
