@@ -6,6 +6,6 @@ require('http').createServer(function (req, res) {
   req.addListener('end', function () {
     fileServer.serve(req, res);
   }).resume();
-}).listen(8080);
+}).listen(8181);
 
 console.log('Running jr-crop example server.');

@@ -61,11 +61,11 @@
 
     .controller('MainController', function($scope, $ionicModal, $jrCrop) {
       $scope.images = [
-        '//placekitten.com/400/300',
-        '//placekitten.com/300/340',
-        '//placekitten.com/500/400',
-        '//placekitten.com/500/500',
-        '//placekitten.com/600/500',
+        'images/kitten_1.jpeg',
+        'images/kitten_2.jpeg',
+        'images/kitten_3.jpeg',
+        'images/kitten_4.jpeg',
+        'images/kitten_5.jpeg',
       ]
 
       $scope.crop = function(image) {
@@ -74,7 +74,6 @@
           width: 200,
           height: 200
         }).then(function(canvas) {
-
           $ionicModal.fromTemplateUrl('result-cropped.html', function(modal) {
             $scope.modal = modal;
 
