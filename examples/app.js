@@ -15,4 +15,4 @@ require('http').createServer(function (req, res) {
   }).resume();
 }).listen(8181);
 
-console.log('Running jr-crop example server.');
+console.log('Running jr-crop example server. Visit http://localhost:8181');
