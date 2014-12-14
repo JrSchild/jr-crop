@@ -1,6 +1,18 @@
 {
   "name": "jr-crop",
-  "version": "0.0.1",
+  "version": "0.1.0",
+  "homepage": "https://github.com/JrSchild/jr-crop",
+  "authors": [
+    "Joram Ruitenschild"
+  ],
+  "description": "A simple ionic plugin to crop your images.",
+  "keywords": [
+    "jr-crop",
+    "crop",
+    "ionic",
+    "ionic-crop"
+  ],
+  "license": "MIT",
   "devDependencies": {
     "ionic-bower": "driftyco/ionic-bower#1.0.0-beta.6"
   }
