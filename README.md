@@ -42,4 +42,4 @@ $jrCrop.crop({
 I got ya. Run `bower install && npm install && npm test` and visit `localhost:8181`. Great, now you can visit this from your phone too. It works best when packaged in cordova, as how you should use ionic anyway.
 
 ## Support
-Right now I'm only supporting iOS. Any help with debugging on Android is always welcome. If you just want to leave your thoughts you can reply in the [forum topic](http://forum.ionicframework.com/t/sharing-my-photo-crop-plugin/4961).
+Though I'm only supporting iOS, I did get reports that it's working well on Android. If it doesn't, feel free to fork and update my codebase. If you just want to leave your thoughts you can reply in the [ionic forum topic](http://forum.ionicframework.com/t/sharing-my-photo-crop-plugin/4961).
