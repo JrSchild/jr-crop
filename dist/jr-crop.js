@@ -38,8 +38,8 @@ function($ionicModal, $rootScope, $q) {
     scale: 1,
 
     last_scale: 1,
-    last_posX:0,
-    last_posY:0,
+    last_posX: 0,
+    last_posY: 0,
 
     initialize: function(options) {
       var self = this;
