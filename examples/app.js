@@ -1,10 +1,17 @@
 var static = require('node-static');
 
-var fileServer = new static.Server('../');
+var r_match_vendor = /^\/(?:bower|dist)/;
+
+var vendor = new static.Server('./');
+var examples = new static.Server('./examples');
 
 require('http').createServer(function (req, res) {
   req.addListener('end', function () {
-    fileServer.serve(req, res);
+    if (r_match_vendor.test(req.url)) {
+      return vendor.serve(req, res);
+    }
+
+    examples.serve(req, res);
   }).resume();
 }).listen(8181);
 

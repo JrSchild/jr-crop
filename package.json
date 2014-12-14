@@ -1,11 +1,15 @@
 {
   "name": "jr-crop",
   "version": "0.0.1",
+  "scripts": {
+    "test": "node examples/app.js"
+  },
   "devDependencies": {
     "grunt": "~0.4.1",
     "grunt-contrib-clean": "~0.5.0",
     "grunt-contrib-jshint": "~0.10.0",
     "grunt-contrib-sass": "~0.7.3",
-    "grunt-contrib-uglify": "~0.4.0"
+    "grunt-contrib-uglify": "~0.4.0",
+    "node-static": "~0.7.6"
   }
 }
