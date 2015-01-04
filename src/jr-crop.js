@@ -14,9 +14,9 @@ function($ionicModal, $rootScope, $q) {
                       '<div class="jr-crop-select" style="overflow: hidden" ng-style="{width: width + \'px\', height: height + \'px\'}"></div>' +
                     '</div>' +
                     '<div class="bar bar-footer bar-dark jr-crop-footer">' +
-                      '<button class="button button-clear" ng-click="cancel()">Cancel</button>' +
+                      '<button class="button button-clear" ng-click="cancel()">{{cancelText}}</button>' +
                       '<div class="title">{{title}}</div>' +
-                      '<button class="button button-clear" ng-click="crop()">Choose</button>' +
+                      '<button class="button button-clear" ng-click="crop()">{{chooseText}}</button>' +
                     '</div>' +
                   '</div>';
 
@@ -60,6 +60,8 @@ function($ionicModal, $rootScope, $q) {
       // options === scope. Expose actions for modal.
       self.options.cancel = this.cancel.bind(this);
       self.options.crop = this.crop.bind(this);
+      self.options.cancelText = self.options.cancelText || 'Cancel';
+      self.options.chooseText = self.options.chooseText || 'Choose';
     },
 
     /**
