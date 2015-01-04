@@ -6,6 +6,10 @@
     "Joram Ruitenschild"
   ],
   "description": "A simple ionic plugin to crop your images.",
+  "main": [
+      "dist/jr-crop.css",
+      "dist/jr-crop.min.js"
+  ],
   "keywords": [
     "jr-crop",
     "crop",
