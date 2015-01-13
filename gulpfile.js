@@ -9,7 +9,7 @@ var bower = require('./bower.json');
 var banner = [
   '/**',
   ' * <%= bower.name %> - <%= bower.description %>',
-  ' * @version v<%= bower.version %>',
+  ' * @version <%= bower.version %>',
   ' * @link <%= bower.homepage %>',
   ' * @author <%= bower.authors.join(", ") %>',
   ' * @license <%= bower.license %>',
