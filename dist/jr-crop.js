@@ -1,11 +1,11 @@
 /**
  * jr-crop - A simple ionic plugin to crop your images.
- * @version v0.1.1
+ * @version 0.2.0
  * @link https://github.com/JrSchild/jr-crop
  * @author Joram Ruitenschild
  * @license MIT
  */
-angular.module('ionic')
+angular.module('jrCrop', [])
 
 .factory('$jrCrop', [
   '$ionicModal',
@@ -67,34 +67,30 @@ function($ionicModal, $rootScope, $q) {
       // options === scope. Expose actions for modal.
       self.options.cancel = this.cancel.bind(this);
       self.options.crop = this.crop.bind(this);
-      self.options.cancelText = self.options.cancelText || 'Cancel';
-      self.options.chooseText = self.options.chooseText || 'Choose';
     },
 
     /**
      * Init the image in a center position
      */
     initImage: function() {
-      var self = this;
-
-      if (self.options.height < self.imgHeight || self.options.width < self.imgWidth) {
-        var imgAspectRatio = self.imgWidth / self.imgHeight;
-        var selectAspectRatio = self.options.width / self.options.height;
+      if (this.options.height < this.imgHeight || this.options.width < this.imgWidth) {
+        var imgAspectRatio = this.imgWidth / this.imgHeight;
+        var selectAspectRatio = this.options.width / this.options.height;
 
         if (selectAspectRatio > imgAspectRatio) {
-          self.scale = self.last_scale = self.options.width / self.imgWidth;
+          this.scale = this.last_scale = this.options.width / this.imgWidth;
         } else {
-          self.scale = self.last_scale = self.options.height / self.imgHeight;
+          this.scale = this.last_scale = this.options.height / this.imgHeight;
         }
       }
 
-      var centerX = (self.imgWidth - self.options.width) / 2;
-      var centerY = (self.imgHeight - self.options.height) / 2;
+      var centerX = (this.imgWidth - this.options.width) / 2;
+      var centerY = (this.imgHeight - this.options.height) / 2;
 
-      self.posX = self.last_posX = -centerX;
-      self.posY = self.last_posY = -centerY;
+      this.posX = this.last_posX = -centerX;
+      this.posY = this.last_posY = -centerY;
 
-      self.setImageTransform();
+      this.setImageTransform();
     },
 
     cancel: function() {
@@ -159,6 +155,9 @@ function($ionicModal, $rootScope, $q) {
       }
 
       // Based on: http://stackoverflow.com/questions/18011099/pinch-to-zoom-using-hammer-js
+      var options = {
+        prevent_default_directions: ['left','right', 'up', 'down']
+      };
       ionic.onGesture('touch transform drag dragstart dragend', function(e) {
         switch (e.type) {
           case 'touch':
@@ -195,7 +194,7 @@ function($ionicModal, $rootScope, $q) {
 
         self.setImageTransform();
 
-      }, self.options.modal.el);
+      }, self.options.modal.el, options);
     },
 
     setImageTransform: function() {
@@ -265,18 +264,20 @@ function($ionicModal, $rootScope, $q) {
   });
 
   return {
-    options: {
+    defaultOptions: {
       width: 0,
       height: 0,
-      aspectRatio: 0
+      aspectRatio: 0,
+      cancelText: 'Cancel',
+      chooseText: 'Choose'
     },
 
     crop: function(options) {
-      this.initOptions(options);
+      options = this.initOptions(options);
 
       var scope = $rootScope.$new(true);
 
-      ionic.Utils.extend(scope, this.options);
+      ionic.extend(scope, options);
 
       scope.modal = $ionicModal.fromTemplate(template, {
         scope: scope
@@ -288,21 +289,27 @@ function($ionicModal, $rootScope, $q) {
       });
     },
 
-    initOptions: function(options) {
-      ionic.Utils.extend(this.options, options);
+    initOptions: function(_options) {
+      var options;
 
-      if (this.options.aspectRatio) {
+      // Apply default values to options.
+      options = ionic.extend({}, this.defaultOptions);
+      options = ionic.extend(options, _options);
 
-        if (!this.options.width && this.options.height) {
-          this.options.width = 200;
+      if (options.aspectRatio) {
+
+        if (!options.width && options.height) {
+          options.width = 200;
         }
 
-        if (this.options.width) {
-          this.options.height = this.options.width / this.options.aspectRatio;
-        } else if (this.options.height) {
-          this.options.width = this.options.height * this.options.aspectRatio;
+        if (options.width) {
+          options.height = options.width / options.aspectRatio;
+        } else if (options.height) {
+          options.width = options.height * options.aspectRatio;
         }
       }
+
+      return options;
     }
   };
 }]);
