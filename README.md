@@ -49,6 +49,6 @@ I got ya. Run `bower install && npm install && npm test` and visit `localhost:81
 Though I'm only supporting iOS, I did get reports that it's working well on Android. If it doesn't, feel free to fork and update my codebase. If you just want to leave your thoughts you can reply in the [ionic forum topic](http://forum.ionicframework.com/t/sharing-my-photo-crop-plugin/4961).
 
 ## Release History
-* 2015-04-05   v0.2.0   Breaking: jr-crop is now its own module, import it first. Support ionic v1.0.0 release candidate. Setting options will no longer overwrite the default options.
+* 2015-04-05   v1.0.0   Breaking: jr-crop is now its own module, import it first. Support ionic v1.0.0 release candidate. Setting options will no longer overwrite the default options.
 * 2015-01-04   v0.1.1   Customize Cancel and Choose text.
 * 2014-12-14   v0.1.0   Release on bower, move from grunt to gulp, version numbering in header. Clean up examples and test server. Place the image in the center on initializing. Add maximum scale option. Hide picture overflow in modal at bigger viewport. Add example pictures as static files rather than from url.

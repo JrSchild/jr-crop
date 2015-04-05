@@ -1,6 +1,6 @@
 /**
  * jr-crop - A simple ionic plugin to crop your images.
- * @version 0.2.0
+ * @version 1.0.0
  * @link https://github.com/JrSchild/jr-crop
  * @author Joram Ruitenschild
  * @license MIT
