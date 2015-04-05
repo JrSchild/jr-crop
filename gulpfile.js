@@ -37,4 +37,8 @@ gulp.task('style', function () {
     .pipe(gulp.dest('dist'));
 });
 
+gulp.task('watch', function() {
+  gulp.watch('src/**/*', ['default']);
+});
+
 gulp.task('default', ['lint', 'scripts', 'style']);
