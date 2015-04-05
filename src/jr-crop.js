@@ -148,6 +148,9 @@ function($ionicModal, $rootScope, $q) {
       }
 
       // Based on: http://stackoverflow.com/questions/18011099/pinch-to-zoom-using-hammer-js
+      var options = {
+        prevent_default_directions: ['left','right', 'up', 'down']
+      };
       ionic.onGesture('touch transform drag dragstart dragend', function(e) {
         switch (e.type) {
           case 'touch':
@@ -184,7 +187,7 @@ function($ionicModal, $rootScope, $q) {
 
         self.setImageTransform();
 
-      }, self.options.modal.el);
+      }, self.options.modal.el, options);
     },
 
     setImageTransform: function() {
