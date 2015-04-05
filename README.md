@@ -48,6 +48,9 @@ I got ya. Run `bower install && npm install && npm test` and visit `localhost:81
 ## Support
 Though I'm only supporting iOS, I did get reports that it's working well on Android. If it doesn't, feel free to fork and update my codebase. If you just want to leave your thoughts you can reply in the [ionic forum topic](http://forum.ionicframework.com/t/sharing-my-photo-crop-plugin/4961).
 
+## Contributing
+Open an issue or create a pull request. Please exclude the /dist files from your pull request.
+
 ## Release History
 * 2015-04-05   v1.0.0   Breaking: jr-crop is now its own module, import it first. Support ionic v1.0.0 release candidate. Setting options will no longer overwrite the default options.
 * 2015-01-04   v0.1.1   Customize Cancel and Choose text.
