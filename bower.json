@@ -18,6 +18,6 @@
   ],
   "license": "MIT",
   "devDependencies": {
-    "ionic-bower": "driftyco/ionic-bower#v1.0.0-rc.2"
+    "ionic": "1.0.0-rc.2"
   }
 }
