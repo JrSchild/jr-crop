@@ -5,7 +5,7 @@
  * @author Joram Ruitenschild
  * @license MIT
  */
-angular.module('ionic')
+angular.module('jrCrop', [])
 
 .factory('$jrCrop', [
   '$ionicModal',
