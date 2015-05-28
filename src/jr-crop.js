@@ -1,3 +1,10 @@
+/**
+ * jr-crop - A simple ionic plugin to crop your images.
+ * @version 1.0.0
+ * @link https://github.com/JrSchild/jr-crop
+ * @author Joram Ruitenschild
+ * @license MIT
+ */
 angular.module('jrCrop', [])
 
 .factory('$jrCrop', [
@@ -6,20 +13,90 @@ angular.module('jrCrop', [])
   '$q',
 function($ionicModal, $rootScope, $q) {
 
-  var template = '<div class="jr-crop modal">' +
-                    '<div class="jr-crop-center-container">' +
+  
+  var headerHTML = '<div class="bar bar-header bar-dark jr-crop-footer">' +
+	  		         '<button class="button button-clear" ng-click="cancel()">{{cancelText}}</button>' +
+	  		         '<div class="title">{{title}}</div>' +
+	  		         '<button class="button button-clear" ng-click="crop()">{{chooseText}}</button>' +
+	  		       '</div>';
+  
+  var centerHTML = '<div class="jr-crop-center-container">' +
                       '<div class="jr-crop-img" ng-style="{width: width + \'px\', height: height + \'px\'}"></div>' +
                     '</div>' +
                     '<div class="jr-crop-center-container">' +
                       '<div class="jr-crop-select" style="overflow: hidden" ng-style="{width: width + \'px\', height: height + \'px\'}"></div>' +
-                    '</div>' +
-                    '<div class="bar bar-footer bar-dark jr-crop-footer">' +
-                      '<button class="button button-clear" ng-click="cancel()">{{cancelText}}</button>' +
-                      '<div class="title">{{title}}</div>' +
-                      '<button class="button button-clear" ng-click="crop()">{{chooseText}}</button>' +
-                    '</div>' +
-                  '</div>';
-
+                    '</div>';
+  
+  var footerHTML = '<div class="bar bar-footer bar-dark jr-crop-footer">' +
+                     '<button class="button button-clear" ng-click="cancel()">{{cancelText}}</button>' +
+                     '<div class="title">{{title}}</div>' +
+                     '<button class="button button-clear" ng-click="crop()">{{chooseText}}</button>' +
+                   '</div>';
+  
+	/**
+	 * resize a canvas using the resample_hermite algorithm
+	 * Courtesy of viliusle
+	 * https://github.com/viliusle/Hermite-resize
+	 */
+	function resize(canvas, W, H, W2, H2){
+		var time1 = Date.now();
+		W2 = Math.round(W2);
+		H2 = Math.round(H2);
+		var img = canvas.getContext("2d").getImageData(0, 0, W, H);
+		var img2 = canvas.getContext("2d").getImageData(0, 0, W2, H2);
+		var data = img.data;
+		var data2 = img2.data;
+		var ratio_w = W / W2;
+		var ratio_h = H / H2;
+		var ratio_w_half = Math.ceil(ratio_w/2);
+		var ratio_h_half = Math.ceil(ratio_h/2);
+		for(var j = 0; j < H2; j++){
+			for(var i = 0; i < W2; i++){
+				var x2 = (i + j*W2) * 4;
+				var weight = 0;
+				var weights = 0;
+				var weights_alpha = 0;
+				var gx_r = gx_g = gx_b = gx_a = 0;
+				var center_y = (j + 0.5) * ratio_h;
+				for(var yy = Math.floor(j * ratio_h); yy < (j + 1) * ratio_h; yy++){
+					var dy = Math.abs(center_y - (yy + 0.5)) / ratio_h_half;
+					var center_x = (i + 0.5) * ratio_w;
+					var w0 = dy*dy //pre-calc part of w
+					for(var xx = Math.floor(i * ratio_w); xx < (i + 1) * ratio_w; xx++){
+						var dx = Math.abs(center_x - (xx + 0.5)) / ratio_w_half;
+						var w = Math.sqrt(w0 + dx*dx);
+						if(w >= -1 && w <= 1){
+							//hermite filter
+							weight = 2 * w*w*w - 3*w*w + 1;
+							if(weight > 0){
+								dx = 4*(xx + yy*W);
+								//alpha
+								gx_a += weight * data[dx + 3];
+								weights_alpha += weight;
+								//colors
+								if(data[dx + 3] < 255)
+									weight = weight * data[dx + 3] / 250;
+								gx_r += weight * data[dx];
+								gx_g += weight * data[dx + 1];
+								gx_b += weight * data[dx + 2];
+								weights += weight;
+							}
+						}
+					}
+				}
+				data2[x2] = gx_r / weights;
+				data2[x2 + 1] = gx_g / weights;
+				data2[x2 + 2] = gx_b / weights;
+				data2[x2 + 3] = gx_a / weights_alpha;
+			}
+		}
+		console.log("hermite = "+(Math.round(Date.now() - time1)/1000)+" s");
+		canvas.getContext("2d").clearRect(0, 0, Math.max(W, W2), Math.max(H, H2));
+		canvas.width = W2;
+		canvas.height = H2;
+		canvas.getContext("2d").putImageData(img2, 0, 0);
+	};
+  
   var jrCropController = ionic.views.View.inherit({
 
     promise: null,
@@ -36,10 +113,12 @@ function($ionicModal, $rootScope, $q) {
     posX: 0,
     posY: 0,
     scale: 1,
+	rotate: 0,
 
     last_scale: 1,
     last_posX: 0,
     last_posY: 0,
+	last_rotate: 0,
 
     initialize: function(options) {
       var self = this;
@@ -151,10 +230,16 @@ function($ionicModal, $rootScope, $q) {
       var options = {
         prevent_default_directions: ['left','right', 'up', 'down']
       };
-      ionic.onGesture('touch transform drag dragstart dragend', function(e) {
+      var validGestures = "touch transform drag dragstart dragend";
+      if(self.options.allowRotation){
+    	  validGestures = validGestures + " rotate";
+      };
+      
+      ionic.onGesture(validGestures, function(e) {
         switch (e.type) {
           case 'touch':
             self.last_scale = self.scale;
+            self.last_rotate = self.rotate;
             break;
           case 'drag':
             self.posX = self.last_posX + e.gesture.deltaX - transforming_correctX;
@@ -183,7 +268,10 @@ function($ionicModal, $rootScope, $q) {
               transforming_correctY = 0;
             }
             break;
-        }
+          case 'rotate':
+         	self.rotate = self.last_rotate + e.gesture.rotation;
+        	break;
+       }
 
         self.setImageTransform();
 
@@ -195,7 +283,8 @@ function($ionicModal, $rootScope, $q) {
 
       var transform =
         'translate3d(' + self.posX + 'px,' + self.posY + 'px, 0) ' +
-        'scale3d(' + self.scale + ',' + self.scale + ', 1)';
+        'scale3d(' + self.scale + ',' + self.scale + ', 1)' +
+        'rotate(' + self.rotate + 'deg)';
 
       self.imgSelect.style[ionic.CSS.TRANSFORM] = transform;
       self.imgFull.style[ionic.CSS.TRANSFORM] = transform;
@@ -230,7 +319,31 @@ function($ionicModal, $rootScope, $q) {
       var sourceX = (this.posX - correctX) / this.scale;
       var sourceY = (this.posY - correctY) / this.scale;
 
-      context.drawImage(this.imgFull, sourceX, sourceY);
+      //see http://creativejs.com/2012/01/day-10-drawing-rotated-images-into-canvas/
+      //move the origin  
+      context.translate(sourceX, sourceY);
+      //move to center and rotate
+      context.translate(this.imgWidth/2, this.imgHeight/2); 
+      context.rotate(this.rotate*Math.PI/180);
+      
+      context.drawImage(this.imgFull, this.imgWidth/2 * -1, this.imgHeight/2 * -1);
+      
+      //resize the final canvas if the user specified the according options
+      //this may reduce the size dramatically
+      if(this.options.resizeWidth || this.options.resizeHight){
+    	  var resizeWidth = this.options.resizeWidth;
+    	  var resizeHight = this.options.resizeHight;
+    	  if(!resizeWidth){
+    		  resizeWidth = resizeHight;
+    	  };
+    	  if(!resizeHight){
+    		  resizeHight = resizeWidth;
+    	  };
+    	  
+		  console.log("before: canvas width = " + canvas.width + " height = " + canvas.height + " length = " + canvas.toDataURL().length);
+    	  resize(canvas, canvas.width, canvas.height, resizeWidth, resizeHight);
+		  console.log("after: canvas width = " + canvas.width + " height = " + canvas.height + " length = " + canvas.toDataURL().length);
+      };
 
       this.options.modal.remove();
       this.promise.resolve(canvas);
@@ -262,7 +375,9 @@ function($ionicModal, $rootScope, $q) {
       height: 0,
       aspectRatio: 0,
       cancelText: 'Cancel',
-      chooseText: 'Choose'
+      chooseText: 'Choose',
+      allowRotation: false,
+      buttonLocation: 'footer'
     },
 
     crop: function(options) {
@@ -272,6 +387,17 @@ function($ionicModal, $rootScope, $q) {
 
       ionic.extend(scope, options);
 
+      //construct the template regarding the options.
+      var template = '<div class="jr-crop modal">';
+      if(options.buttonLocation == "header"){
+    	  template = template + headerHTML;
+      };
+      template = template + centerHTML;
+      if(options.buttonLocation == "footer"){
+    	  template = template + footerHTML;
+      };
+      template = template + '</div>';
+      
       scope.modal = $ionicModal.fromTemplate(template, {
         scope: scope
       });
@@ -303,6 +429,17 @@ function($ionicModal, $rootScope, $q) {
       }
 
       return options;
-    }
+    },
+    
+	/**
+	 * Expose the rezise function as a public method of this module.
+	 * Resize a canvas using the resample_hermite algorithm
+	 * Courtesy of viliusle
+	 * https://github.com/viliusle/Hermite-resize
+	 */
+	resize: function(canvas, W, H, W2, H2){
+		return resize(canvas, W, H, W2, H2);
+	}
+
   };
 }]);

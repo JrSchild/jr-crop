@@ -3,7 +3,7 @@ jr-crop
 
 A simple ionic plugin to crop your images, inspired by whatsapp and telegram.
 * Specifiy width and height of target
-* Doesn't actually scale the image, only returns a cropped version. Since the quality of images while scaling is inconsistent it's up to the developper to implement this, preferably on the server.
+* Supports image scaling by using the resample_hermite algorithm (Courtesy of viliusle, https://github.com/viliusle/Hermite-resize). See options.
 * Returns a canvas element with the new cropped image.
 
 ![example](/example.jpg)
@@ -32,13 +32,20 @@ $jrCrop.crop({
 });
 ```
 
-Additionally you can add a title in the footer.
+##Options
+You can add the following options when you call 'crop':
 ```
 $jrCrop.crop({
     url: url,
     width: 200,
     height: 200,
-    title: 'Move and Scale'
+    title: 'Move and Scale' //additional title,
+	cancelText: 'Abort', //default is: 'Cancel'
+	chooseText: 'OK', //default is 'Choose'
+	allowRotation: true, //default is false
+	buttonLocation: 'header', //default is 'footer'
+	resizeWidth: 75, //if present then the image will be scaled to given width. Also used for resizeHight if that option is not present.
+	resizeHight: 75, //if present then the image will be scaled to given height. Also used for resizeWidth if that option is not present.
 });
 ```
 
