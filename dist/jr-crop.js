@@ -43,10 +43,12 @@ function($ionicModal, $rootScope, $q) {
     posX: 0,
     posY: 0,
     scale: 1,
+	rotate: 0,
 
     last_scale: 1,
     last_posX: 0,
     last_posY: 0,
+	last_rotate: 0,
 
     initialize: function(options) {
       var self = this;
@@ -158,7 +160,7 @@ function($ionicModal, $rootScope, $q) {
       var options = {
         prevent_default_directions: ['left','right', 'up', 'down']
       };
-      ionic.onGesture('touch transform drag dragstart dragend', function(e) {
+      ionic.onGesture('touch transform drag dragstart dragend rotate', function(e) {
         switch (e.type) {
           case 'touch':
             self.last_scale = self.scale;
@@ -190,7 +192,10 @@ function($ionicModal, $rootScope, $q) {
               transforming_correctY = 0;
             }
             break;
-        }
+          case 'rotate':
+         	self.rotate = self.last_rotate + e.gesture.rotation;
+        	break;
+       }
 
         self.setImageTransform();
 
@@ -202,7 +207,8 @@ function($ionicModal, $rootScope, $q) {
 
       var transform =
         'translate3d(' + self.posX + 'px,' + self.posY + 'px, 0) ' +
-        'scale3d(' + self.scale + ',' + self.scale + ', 1)';
+        'scale3d(' + self.scale + ',' + self.scale + ', 1)' +
+        'rotate(' + self.rotate + 'deg)';
 
       self.imgSelect.style[ionic.CSS.TRANSFORM] = transform;
       self.imgFull.style[ionic.CSS.TRANSFORM] = transform;
@@ -237,7 +243,14 @@ function($ionicModal, $rootScope, $q) {
       var sourceX = (this.posX - correctX) / this.scale;
       var sourceY = (this.posY - correctY) / this.scale;
 
-      context.drawImage(this.imgFull, sourceX, sourceY);
+      //see http://creativejs.com/2012/01/day-10-drawing-rotated-images-into-canvas/
+      //move the origin  
+      context.translate(sourceX, sourceY);
+      //move to center and rotate
+      context.translate(this.imgWidth/2, this.imgHeight/2); 
+      context.rotate(this.rotate*Math.PI/180);
+      
+      context.drawImage(this.imgFull, this.imgWidth/2 * -1, this.imgHeight/2 * -1);
 
       this.options.modal.remove();
       this.promise.resolve(canvas);
