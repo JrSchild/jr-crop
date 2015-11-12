@@ -263,7 +263,7 @@ function($ionicModal, $rootScope, $q) {
       aspectRatio: 0,
       cancelText: 'Cancel',
       chooseText: 'Choose',
-      circle: true
+      circle: false
     },
 
     crop: function(options) {
