@@ -7,8 +7,8 @@
   ],
   "description": "A simple ionic plugin to crop your images.",
   "main": [
-      "dist/jr-crop.css",
-      "dist/jr-crop.min.js"
+    "dist/jr-crop.css",
+    "dist/jr-crop.min.js"
   ],
   "keywords": [
     "jr-crop",
@@ -18,6 +18,6 @@
   ],
   "license": "MIT",
   "devDependencies": {
-    "ionic": "1.0.0-rc.2"
+    "ionic": "1.1.1"
   }
 }
