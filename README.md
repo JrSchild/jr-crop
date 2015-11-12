@@ -9,7 +9,10 @@ A simple ionic plugin to crop your images, inspired by whatsapp and telegram.
 ![example](/example.jpg)
 
 ## Simple enough, let's get started.
-Import the static files jr-crop.js and jr-crop.css. Declare jrCrop as a dependency
+
+Install the files: `bower install jr-crop --save`.
+
+Import the static files jr-crop.js and jr-crop.css. Declare jrCrop as a dependency.
 ```
 .module('myModule', ['ionic', 'jrCrop'])
 ```
