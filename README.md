@@ -42,6 +42,14 @@ $jrCrop.crop({
 });
 ```
 
+Add circle:true to the options to overlay the image with a circle. Note: it won't actually crop the image with a circle, just the visual representation.
+```
+$jrCrop.crop({
+    url: url,
+    circle: true
+});
+```
+
 ## Examples please!!
 I got ya. Run `bower install && npm install && npm test` and visit `localhost:8181`. Great, now you can visit this from your phone too. It works best when packaged in cordova, as how you should use ionic anyway.
 
