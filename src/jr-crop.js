@@ -11,7 +11,7 @@ function($ionicModal, $rootScope, $q) {
                       '<div class="jr-crop-img" ng-style="{width: width + \'px\', height: height + \'px\'}"></div>' +
                     '</div>' +
                     '<div class="jr-crop-center-container">' +
-                      '<div class="jr-crop-select" style="overflow: hidden" ng-style="{width: width + \'px\', height: height + \'px\'}"></div>' +
+                      '<div class="jr-crop-select" ng-class="{\'jr-crop-select-circle\': circle}" style="overflow: hidden" ng-style="{width: width + \'px\', height: height + \'px\'}"></div>' +
                     '</div>' +
                     '<div class="bar bar-footer bar-dark jr-crop-footer">' +
                       '<button class="button button-clear" ng-click="cancel()">{{cancelText}}</button>' +
@@ -262,7 +262,8 @@ function($ionicModal, $rootScope, $q) {
       height: 0,
       aspectRatio: 0,
       cancelText: 'Cancel',
-      chooseText: 'Choose'
+      chooseText: 'Choose',
+      circle: true
     },
 
     crop: function(options) {
