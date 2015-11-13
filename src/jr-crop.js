@@ -242,7 +242,7 @@ function($ionicModal, $rootScope, $q) {
      */
     loadImage: function() {
       var promise = $q.defer();
-      
+
       // Load the image and resolve with the DOM node when done.
       angular.element('<img />')
         .bind('load', function(e) {
