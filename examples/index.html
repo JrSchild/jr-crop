@@ -78,7 +78,10 @@
             $scope.modal = modal;
 
             modal.show().then(function() {
-              document.querySelector('.cropped-canvas').appendChild(canvas);
+              var croppedCanvas = document.querySelector('.cropped-canvas');
+
+              croppedCanvas.appendChild(canvas);
+              croppedCanvas.appendChild($jrCrop.canvasToCircle(canvas));
             });
           })
         });

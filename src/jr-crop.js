@@ -304,6 +304,26 @@ function($ionicModal, $rootScope, $q) {
       }
 
       return options;
+    },
+
+    canvasToCircle: function (oldCanvas) {
+
+      // Create a new canvas with the same proportions.
+      var canvas = document.createElement('canvas');
+      var context = canvas.getContext('2d');
+      var width = oldCanvas.width;
+      var height = oldCanvas.height;
+
+      canvas.width = width;
+      canvas.height = height;
+
+      context.save();
+      context.ellipse(width / 2, height / 2, width / 2, height / 2, 0, 0, Math.PI * 2, true);
+      context.clip();
+      context.drawImage(oldCanvas, 0, 0, width, height);
+      context.restore();
+
+      return canvas;
     }
   };
 }]);
