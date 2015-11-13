@@ -263,6 +263,7 @@ function($ionicModal, $rootScope, $q) {
       aspectRatio: 0,
       cancelText: 'Cancel',
       chooseText: 'Choose',
+      template: template,
       circle: false
     },
 
@@ -273,7 +274,7 @@ function($ionicModal, $rootScope, $q) {
 
       ionic.extend(scope, options);
 
-      scope.modal = $ionicModal.fromTemplate(template, {
+      scope.modal = $ionicModal.fromTemplate(options.template, {
         scope: scope
       });
 
