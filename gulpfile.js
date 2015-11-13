@@ -13,7 +13,7 @@ var banner = [
   ' * @link <%= bower.homepage %>',
   ' * @author <%= bower.authors.join(", ") %>',
   ' * @license <%= bower.license %>',
-  ' */', ''].join('\n');
+  ' */', '', ''].join('\n');
 
 gulp.task('lint', function () {
   return gulp.src('src/jr-crop.js')
@@ -34,6 +34,7 @@ gulp.task('scripts', function () {
 gulp.task('style', function () {
   return gulp.src('src/jr-crop.scss')
     .pipe(sass())
+    .pipe(header(banner, { bower: bower } ))
     .pipe(gulp.dest('dist'));
 });
 

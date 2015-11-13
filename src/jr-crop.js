@@ -1,4 +1,4 @@
-angular.module('jrCrop', [])
+angular.module('jrCrop', ['ionic'])
 
 .factory('$jrCrop', [
   '$ionicModal',
@@ -218,7 +218,7 @@ function($ionicModal, $rootScope, $q) {
       canvas.width = this.options.width / this.scale;
       canvas.height = this.options.height / this.scale;
 
-      // The full proportions 
+      // The full proportions
       var currWidth = this.imgWidth * this.scale;
       var currHeight = this.imgHeight * this.scale;
 
@@ -242,7 +242,7 @@ function($ionicModal, $rootScope, $q) {
      */
     loadImage: function() {
       var promise = $q.defer();
-      
+
       // Load the image and resolve with the DOM node when done.
       angular.element('<img />')
         .bind('load', function(e) {
@@ -263,6 +263,7 @@ function($ionicModal, $rootScope, $q) {
       aspectRatio: 0,
       cancelText: 'Cancel',
       chooseText: 'Choose',
+      template: template,
       circle: false
     },
 
@@ -273,7 +274,7 @@ function($ionicModal, $rootScope, $q) {
 
       ionic.extend(scope, options);
 
-      scope.modal = $ionicModal.fromTemplate(template, {
+      scope.modal = $ionicModal.fromTemplate(options.template, {
         scope: scope
       });
 
