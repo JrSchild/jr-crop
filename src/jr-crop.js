@@ -306,9 +306,9 @@ function($ionicModal, $rootScope, $q) {
       return options;
     },
 
+    // Accepts a canvas element and returns it clipped in a circle.
+    // Currently only supported on square images.
     canvasToCircle: function (oldCanvas) {
-
-      // Create a new canvas with the same proportions.
       var canvas = document.createElement('canvas');
       var context = canvas.getContext('2d');
       var width = oldCanvas.width;
@@ -317,11 +317,23 @@ function($ionicModal, $rootScope, $q) {
       canvas.width = width;
       canvas.height = height;
 
-      context.save();
-      context.ellipse(width / 2, height / 2, width / 2, height / 2, 0, 0, Math.PI * 2, true);
-      context.clip();
-      context.drawImage(oldCanvas, 0, 0, width, height);
-      context.restore();
+      // http://stackoverflow.com/a/13854185
+      var scratchCanvas = document.createElement('canvas');
+      var scratchCtx = scratchCanvas.getContext('2d');
+      scratchCanvas.width = width;
+      scratchCanvas.height = height;
+
+      scratchCtx.clearRect(0, 0, scratchCanvas.width, scratchCanvas.height);
+      scratchCtx.globalCompositeOperation = 'source-over';
+      scratchCtx.drawImage(oldCanvas, 0, 0);
+      scratchCtx.fillStyle = '#fff';
+      scratchCtx.globalCompositeOperation = 'destination-in';
+      scratchCtx.beginPath();
+      scratchCtx.arc(width / 2, height / 2, width / 2, 0, Math.PI * 2, true);
+      scratchCtx.closePath();
+      scratchCtx.fill();
+
+      context.drawImage(scratchCanvas, 0, 0);
 
       return canvas;
     }
