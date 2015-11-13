@@ -53,6 +53,21 @@ $jrCrop.crop({
 });
 ```
 
+The template can be overwritten by passing your custom HTML in the options.
+```
+$jrCrop.crop({
+    url: url,
+    width: 200,
+    height: 200,
+    template: '<div>...</div>'
+});
+```
+
+Overwriting default options can be done as well.  
+`$jrCrop.defaultOptions.template = '<div>...</div>';`  
+`$jrCrop.defaultOptions.width = 300;`  
+`$jrCrop.defaultOptions.circle = true;`
+
 ## Examples please!!
 I got ya. Run `bower install && npm install && npm test` and visit `localhost:8181`. Great, now you can visit this from your phone too. It works best when packaged in cordova, as how you should use ionic anyway.
 
@@ -63,6 +78,7 @@ Though I'm only supporting iOS, I did get reports that it's working well on Andr
 Open an issue or create a pull request. Please exclude the /dist files from your pull request.
 
 ## Release History
+* 2015-11-13   v1.1.2   Overwrite the template through options. Documentation on defaultOptions.
 * 2015-11-12   v1.1.1   Circle mask should not be shown by default.
 * 2015-11-12   v1.1.0   Add `circle` option to overlay the image with a circle mask.
 * 2015-04-05   v1.0.0   Breaking: jr-crop is now its own module, import it first. Support ionic v1.0.0 release candidate. Setting options will no longer overwrite the default options.
