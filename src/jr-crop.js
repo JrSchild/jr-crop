@@ -1,4 +1,4 @@
-angular.module('jrCrop', [])
+angular.module('jrCrop', ['ionic'])
 
 .factory('$jrCrop', [
   '$ionicModal',
