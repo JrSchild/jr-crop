@@ -218,7 +218,7 @@ function($ionicModal, $rootScope, $q) {
       canvas.width = this.options.width / this.scale;
       canvas.height = this.options.height / this.scale;
 
-      // The full proportions 
+      // The full proportions
       var currWidth = this.imgWidth * this.scale;
       var currHeight = this.imgHeight * this.scale;
 
