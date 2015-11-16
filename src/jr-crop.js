@@ -4,7 +4,8 @@ angular.module('jrCrop', ['ionic'])
   '$ionicModal',
   '$rootScope',
   '$q',
-function($ionicModal, $rootScope, $q) {
+  '$jrCropToBlob',
+function($ionicModal, $rootScope, $q, $jrCropToBlob) {
 
   var template = '<div class="jr-crop modal">' +
                     '<div class="jr-crop-center-container">' +
@@ -307,4 +308,24 @@ function($ionicModal, $rootScope, $q) {
       return options;
     }
   };
-}]);
+}])
+
+.factory('$jrCropToBlob', function() {
+  var CanvasPrototype = window.HTMLCanvasElement.prototype;
+
+  if (CanvasPrototype.toBlob) {
+    return CanvasPrototype.toBlob;
+  }
+
+  return function(callback, type, quality) {
+    var binStr = atob(this.toDataURL(type, quality).split(',')[1]);
+    var len = binStr.length;
+    var arr = new Uint8Array(len);
+
+    for (var i = 0; i < len; i++) {
+      arr[i] = binStr.charCodeAt(i);
+    }
+
+    callback( new Blob( [arr], {type: type || 'image/png'} ) );
+  };
+});
