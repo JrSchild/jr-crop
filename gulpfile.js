@@ -1,10 +1,12 @@
-var gulp = require('gulp'); 
+var gulp = require('gulp');
 var jshint = require('gulp-jshint');
 var sass = require('gulp-sass');
 var uglify = require('gulp-uglify');
 var rename = require('gulp-rename');
 var header = require('gulp-header');
 var bower = require('./bower.json');
+var ngAnnotate = require('gulp-ng-annotate');
+var stripDebug = require('gulp-strip-debug');
 
 var banner = [
   '/**',
@@ -23,6 +25,10 @@ gulp.task('lint', function () {
 
 gulp.task('scripts', function () {
   return gulp.src('src/jr-crop.js')
+     .pipe(stripDebug())
+     .pipe(ngAnnotate({
+       add: true
+     }))
     .pipe(header(banner, { bower: bower } ))
     .pipe(gulp.dest('dist'))
     .pipe(rename('jr-crop.min.js'))
