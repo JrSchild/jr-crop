@@ -9,6 +9,8 @@
     <link href="/bower/ionic/release/css/ionic.css" rel="stylesheet">
     <link href="/dist/jr-crop.css" rel="stylesheet">
 
+    <script src="/bower/blueimp-canvas-to-blob/js/canvas-to-blob.min.js"></script>
+
     <!-- ionic/angularjs js -->
     <script src="/bower/ionic/release/js/ionic.bundle.js"></script>
     <script src="/dist/jr-crop.js"></script>
@@ -59,14 +61,14 @@
     <script>
     angular.module('cropper', ['ionic', 'jrCrop'])
 
-    .controller('MainController', function($scope, $ionicModal, $jrCrop) {
+    .controller('MainController', function($http, $scope, $ionicModal, $jrCrop) {
       $scope.images = [
         'images/kitten_1.jpeg',
         'images/kitten_2.jpeg',
         'images/kitten_3.jpeg',
         'images/kitten_4.jpeg',
         'images/kitten_5.jpeg',
-      ]
+      ];
 
       $scope.crop = function(image) {
         $jrCrop.crop({
@@ -74,13 +76,30 @@
           width: 200,
           height: 200
         }).then(function(canvas) {
+
+          canvas.toBlob(function(image) {
+            var formData = new FormData();
+            formData.append('image', image);
+
+            $http({
+              url: '/upload',
+              method: 'post',
+              headers: {
+                'Content-Type': undefined
+              },
+              data: formData
+            }).then(function(response) {
+              console.log(response);
+            });
+          }, "image/jpeg", 0.95);
+
           $ionicModal.fromTemplateUrl('result-cropped.html', function(modal) {
             $scope.modal = modal;
 
             modal.show().then(function() {
               document.querySelector('.cropped-canvas').appendChild(canvas);
             });
-          })
+          });
         });
       };
     });
