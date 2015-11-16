@@ -3,15 +3,15 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="initial-scale=1, maximum-scale=1, user-scalable=no, width=device-width">
-    
+
     <title>jr-crop demo</title>
 
-    <link href="/bower/ionic/release/css/ionic.css" rel="stylesheet">
-    <link href="/dist/jr-crop.css" rel="stylesheet">
+    <link href="bower/ionic/release/css/ionic.css" rel="stylesheet">
+    <link href="dist/jr-crop.css" rel="stylesheet">
 
     <!-- ionic/angularjs js -->
-    <script src="/bower/ionic/release/js/ionic.bundle.js"></script>
-    <script src="/dist/jr-crop.js"></script>
+    <script src="bower/ionic/release/js/ionic.bundle.js"></script>
+    <script src="dist/jr-crop.min.js"></script>
     <style>
     html {
       height: 100%;
@@ -26,9 +26,9 @@
     }
     </style>
   </head>
- 
+
   <body>
-    
+
     <div ng-controller="MainController">
       <ion-header-bar class="bar-positive">
         <h1 class="title">Ionic Delete/Option Buttons</h1>
@@ -43,7 +43,7 @@
       </ion-content>
 
     </div>
-    
+
     <script id="result-cropped.html" type="text/ng-template">
       <div class="modal">
         <ion-header-bar class="bar bar-header bar-positive">
@@ -55,10 +55,10 @@
         </ion-content>
       </div>
     </script>
-    
-    <script>
-    angular.module('cropper', ['ionic', 'jrCrop'])
 
+    <script>
+    angular
+    .module('cropper', ['ionic', 'jrCrop'])
     .controller('MainController', function($scope, $ionicModal, $jrCrop) {
       $scope.images = [
         'images/kitten_1.jpeg',
@@ -72,11 +72,12 @@
         $jrCrop.crop({
           url: image,
           width: 200,
-          height: 200
+          height: 200,
+          allowRotation: true
         }).then(function(canvas) {
-          $ionicModal.fromTemplateUrl('result-cropped.html', function(modal) {
+          $ionicModal
+          .fromTemplateUrl('result-cropped.html', function(modal) {
             $scope.modal = modal;
-
             modal.show().then(function() {
               document.querySelector('.cropped-canvas').appendChild(canvas);
             });
