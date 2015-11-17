@@ -22,6 +22,10 @@ app.post('/upload', function (req, res) {
     // The key was set as 'image' on the formData object in the client.
     var file = files.image;
 
+    if (!file) {
+      return res.status(400).send('No image received');
+    }
+
     var extension = types[file.type.toLowerCase()];
 
     // Make sure the extension is valid.
