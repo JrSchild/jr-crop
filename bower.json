@@ -18,7 +18,6 @@
   ],
   "license": "MIT",
   "devDependencies": {
-    "ionic": "1.1.1",
-    "blueimp-canvas-to-blob": "~2.2.0"
+    "ionic": "1.1.1"
   }
 }

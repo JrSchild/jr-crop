@@ -233,6 +233,8 @@ function($ionicModal, $rootScope, $q, $jrCropToBlob) {
 
       context.drawImage(this.imgFull, sourceX, sourceY);
 
+      canvas.toBlob = $jrCropToBlob;
+
       this.options.modal.remove();
       this.promise.resolve(canvas);
     },
