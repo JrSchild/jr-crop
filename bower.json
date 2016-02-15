@@ -17,7 +17,7 @@
     "ionic-crop"
   ],
   "license": "MIT",
-  "devDependencies": {
+  "dependencies": {
     "ionic": "1.1.1",
     "blueimp-canvas-to-blob": "~2.2.0"
   }
