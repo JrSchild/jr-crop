@@ -257,6 +257,7 @@ function($ionicModal, $rootScope, $q) {
           promise.resolve(this);
         })
         .bind('error', promise.reject)
+        .prop('crossOrigin', 'anonymous')
         .prop('src', this.options.url);
 
       // Return the promise
