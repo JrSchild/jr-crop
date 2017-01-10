@@ -160,6 +160,10 @@ function($ionicModal, $rootScope, $q) {
         prevent_default_directions: ['left','right', 'up', 'down']
       };
       ionic.onGesture('touch transform drag dragstart dragend', function(e) {
+        if (ionic.Platform.isAndroid()) {  
+          e.gesture.srcEvent.preventDefault();
+          e.gesture.preventDefault();
+        }
         switch (e.type) {
           case 'touch':
             self.last_scale = self.scale;
