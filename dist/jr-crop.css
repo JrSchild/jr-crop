@@ -34,6 +34,11 @@
 .jr-crop-img {
   opacity: 0.6; }
 
+.jr-icon {
+  float:left;
+  font-size: 20px;
+}
+
 .bar.jr-crop-footer {
   border: none;
   background-color: transparent;
