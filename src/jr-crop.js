@@ -36,10 +36,14 @@ function($ionicModal, $rootScope, $q) {
     posX: 0,
     posY: 0,
     scale: 1,
+    rotate: 0,
+
+    rotateAction: 0,
 
     last_scale: 1,
     last_posX: 0,
     last_posY: 0,
+    last_rotate: 0,
 
     initialize: function(options) {
       var self = this;
@@ -60,6 +64,7 @@ function($ionicModal, $rootScope, $q) {
       // options === scope. Expose actions for modal.
       self.options.cancel = this.cancel.bind(this);
       self.options.crop = this.crop.bind(this);
+      self.options.rotateImage = this.rotateImage.bind(this);
     },
 
     /**
@@ -151,7 +156,14 @@ function($ionicModal, $rootScope, $q) {
       var options = {
         prevent_default_directions: ['left','right', 'up', 'down']
       };
-      ionic.onGesture('touch transform drag dragstart dragend', function(e) {
+
+      if(self.options.rotateGesture){
+        var gestures = 'touch transform drag dragstart dragend rotate';
+      } else{
+        var gestures ='touch transform drag dragstart dragend';
+      }
+
+      ionic.onGesture(gestures, function(e) {
         switch (e.type) {
           case 'touch':
             self.last_scale = self.scale;
@@ -168,6 +180,9 @@ function($ionicModal, $rootScope, $q) {
           case 'dragend':
             self.last_posX = self.posX;
             self.last_posY = self.posY;
+            if(self.options.rotateGesture){
+              self.last_rotate = self.rotate;
+            }
             break;
           case 'dragstart':
             self.last_scale = self.scale;
@@ -183,6 +198,9 @@ function($ionicModal, $rootScope, $q) {
               transforming_correctY = 0;
             }
             break;
+          case 'rotate':
+            self.rotate = self.last_rotate + e.gesture.rotation;
+            break;
         }
 
         self.setImageTransform();
@@ -195,10 +213,25 @@ function($ionicModal, $rootScope, $q) {
 
       var transform =
         'translate3d(' + self.posX + 'px,' + self.posY + 'px, 0) ' +
-        'scale3d(' + self.scale + ',' + self.scale + ', 1)';
+        'scale3d(' + self.scale + ',' + self.scale + ', 1)' +
+        'rotate(' + self.rotate + 'deg)';
 
       self.imgSelect.style[ionic.CSS.TRANSFORM] = transform;
       self.imgFull.style[ionic.CSS.TRANSFORM] = transform;
+    },
+
+    rotateImage: function(){
+      var self = this;
+
+      self.rotateAction--;
+      if(self.rotateAction < 0){
+        self.rotateAction = 3;
+      }
+
+      self.last_rotate = self.rotate;
+      self.rotate = self.rotateAction * 90;   // Returns rotate in degrees
+
+      self.setImageTransform();
     },
 
     /**
@@ -230,11 +263,22 @@ function($ionicModal, $rootScope, $q) {
       var sourceX = (this.posX - correctX) / this.scale;
       var sourceY = (this.posY - correctY) / this.scale;
 
-      context.drawImage(this.imgFull, sourceX, sourceY);
+      // Solution used to enable rotate of picture. Based on work by  akreienbring
+      // https://github.com/akreienbring/jr-crop (added with latest version of jrCrop)
+      // And http://creativejs.com/2012/01/day-10-drawing-rotated-images-into-canvas/
+      context.translate(sourceX,sourceY);
+      context.translate(this.imgWidth/2, this.imgHeight/2);
+
+      context.rotate(this.rotate*Math.PI/180);
+
+      context.drawImage(this.imgFull, -(this.imgWidth/2), -(this.imgHeight/2));
+
+      context.restore();
 
       this.options.modal.remove();
       this.promise.resolve(canvas);
     },
+
 
     /**
      * Load the image and return the element.
@@ -264,7 +308,8 @@ function($ionicModal, $rootScope, $q) {
       cancelText: 'Cancel',
       chooseText: 'Choose',
       template: template,
-      circle: false
+      circle: false,
+      rotateGesture: false
     },
 
     crop: function(options) {
