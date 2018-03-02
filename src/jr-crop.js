@@ -71,15 +71,15 @@ function($ionicModal, $rootScope, $q) {
      * Init the image in a center position
      */
     initImage: function() {
-      if (this.options.height < this.imgHeight || this.options.width < this.imgWidth) {
-        var imgAspectRatio = this.imgWidth / this.imgHeight;
-        var selectAspectRatio = this.options.width / this.options.height;
+      // Image is scaled to fit user's device screen, regardless of size.
+      // Images smaller than the viewport can not be zoomed
+      var imgAspectRatio = this.imgWidth / this.imgHeight;
+      var selectAspectRatio = this.options.width / this.options.height;
 
-        if (selectAspectRatio > imgAspectRatio) {
-          this.scale = this.last_scale = this.options.width / this.imgWidth;
-        } else {
-          this.scale = this.last_scale = this.options.height / this.imgHeight;
-        }
+      if (selectAspectRatio > imgAspectRatio) {
+        this.scale = this.last_scale = this.options.width / this.imgWidth;
+      } else {
+        this.scale = this.last_scale = this.options.height / this.imgHeight;
       }
 
       var centerX = (this.imgWidth - this.options.width) / 2;
@@ -237,7 +237,7 @@ function($ionicModal, $rootScope, $q) {
     /**
      * Calculate the new image from the values calculated by
      * user input. Return a canvas-object with the image on it.
-     * 
+     *
      * Note: It doesn't actually downsize the image, it only returns
      * a cropped version. Since there's inconsistenties in image-quality
      * when downsizing it's up to the developer to implement this. Preferably
